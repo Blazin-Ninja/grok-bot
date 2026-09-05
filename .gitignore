@@ -1,0 +1,13 @@
+.godot/
+.import/
+android/
+local/
+*.apk
+!dist/feel-pass-arm64-debug.apk
+*.idsig
+*.aab
+*.keystore
+export_templates/
+/tmp/
+*.pyc
+.DS_Store
