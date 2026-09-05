@@ -1,0 +1,50 @@
+; Engine configuration file.
+; Feel-pass lives at repo root. Godot 4.3+ / developed on 4.7.2.
+config_version=5
+
+[application]
+
+config/name="Feel-Pass"
+config/description="Contra-like horror/occult run-and-gun feel-pass. Programmer art. Boots straight into play."
+config/version="0.1.0"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.3", "Mobile")
+config/icon="res://icon.svg"
+
+[autoload]
+
+Game="*res://autoload/game.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/resizable=true
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=0
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+pointing/emulate_mouse_from_touch=true
+
+[layer_names]
+
+2d_physics/layer_1="world"
+2d_physics/layer_2="player"
+2d_physics/layer_3="player_bullet"
+2d_physics/layer_4="enemy"
+2d_physics/layer_5="enemy_bullet"
+2d_physics/layer_6="pickup"
+
+[physics]
+
+2d/default_gravity=0
+
+[rendering]
+
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"
+textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0.07, 0.05, 0.09, 1)
