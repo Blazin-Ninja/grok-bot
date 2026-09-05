@@ -1,6 +1,9 @@
 class_name Enemy
 extends CharacterBody2D
 
+const GfxT := preload("res://scripts/gfx.gd")
+const BulletT := preload("res://scripts/bullet.gd")
+
 enum Kind { WALKER, SPITTER, HOPPER }
 
 const GRAVITY := 1400.0
@@ -62,22 +65,22 @@ func _build() -> void:
 	match kind:
 		Kind.WALKER:
 			# Cult walker — red slab + horns
-			Gfx.rect_poly(_gfx, Vector2(-12, -28), Vector2(24, 28), Color(0.72, 0.16, 0.18), 2)
-			Gfx.poly(_gfx, PackedVector2Array([Vector2(-12, -28), Vector2(-4, -40), Vector2(0, -28)]), Color(0.45, 0.08, 0.1), 3)
-			Gfx.poly(_gfx, PackedVector2Array([Vector2(12, -28), Vector2(4, -40), Vector2(0, -28)]), Color(0.45, 0.08, 0.1), 3)
-			Gfx.rect_poly(_gfx, Vector2(-6, -20), Vector2(4, 4), Color(1, 0.85, 0.3), 3)
-			Gfx.rect_poly(_gfx, Vector2(2, -20), Vector2(4, 4), Color(1, 0.85, 0.3), 3)
+			GfxT.rect_poly(_gfx, Vector2(-12, -28), Vector2(24, 28), Color(0.72, 0.16, 0.18), 2)
+			GfxT.poly(_gfx, PackedVector2Array([Vector2(-12, -28), Vector2(-4, -40), Vector2(0, -28)]), Color(0.45, 0.08, 0.1), 3)
+			GfxT.poly(_gfx, PackedVector2Array([Vector2(12, -28), Vector2(4, -40), Vector2(0, -28)]), Color(0.45, 0.08, 0.1), 3)
+			GfxT.rect_poly(_gfx, Vector2(-6, -20), Vector2(4, 4), Color(1, 0.85, 0.3), 3)
+			GfxT.rect_poly(_gfx, Vector2(2, -20), Vector2(4, 4), Color(1, 0.85, 0.3), 3)
 		Kind.SPITTER:
 			# Perched gargoyle — orange hunk
-			Gfx.rect_poly(_gfx, Vector2(-14, -26), Vector2(28, 26), Color(0.78, 0.42, 0.12), 2)
-			Gfx.poly(_gfx, PackedVector2Array([Vector2(-18, -10), Vector2(-14, -26), Vector2(-6, -14)]), Color(0.55, 0.28, 0.08), 3)
-			Gfx.poly(_gfx, PackedVector2Array([Vector2(18, -10), Vector2(14, -26), Vector2(6, -14)]), Color(0.55, 0.28, 0.08), 3)
-			Gfx.rect_poly(_gfx, Vector2(-5, -20), Vector2(10, 6), Color(0.2, 0.05, 0.05), 3)
+			GfxT.rect_poly(_gfx, Vector2(-14, -26), Vector2(28, 26), Color(0.78, 0.42, 0.12), 2)
+			GfxT.poly(_gfx, PackedVector2Array([Vector2(-18, -10), Vector2(-14, -26), Vector2(-6, -14)]), Color(0.55, 0.28, 0.08), 3)
+			GfxT.poly(_gfx, PackedVector2Array([Vector2(18, -10), Vector2(14, -26), Vector2(6, -14)]), Color(0.55, 0.28, 0.08), 3)
+			GfxT.rect_poly(_gfx, Vector2(-5, -20), Vector2(10, 6), Color(0.2, 0.05, 0.05), 3)
 		Kind.HOPPER:
 			# Crawler — magenta squat
-			Gfx.rect_poly(_gfx, Vector2(-14, -18), Vector2(28, 18), Color(0.72, 0.18, 0.55), 2)
-			Gfx.rect_poly(_gfx, Vector2(-10, -24), Vector2(8, 8), Color(0.9, 0.4, 0.75), 3)
-			Gfx.rect_poly(_gfx, Vector2(2, -24), Vector2(8, 8), Color(0.9, 0.4, 0.75), 3)
+			GfxT.rect_poly(_gfx, Vector2(-14, -18), Vector2(28, 18), Color(0.72, 0.18, 0.55), 2)
+			GfxT.rect_poly(_gfx, Vector2(-10, -24), Vector2(8, 8), Color(0.9, 0.4, 0.75), 3)
+			GfxT.rect_poly(_gfx, Vector2(2, -24), Vector2(8, 8), Color(0.9, 0.4, 0.75), 3)
 
 
 func _physics_process(delta: float) -> void:
@@ -127,7 +130,7 @@ func _tick_spitter(delta: float) -> void:
 	if shoot_cd <= 0.0:
 		_gfx.modulate = Color.WHITE
 		var dir := ((player as Node2D).global_position + Vector2(0, -18) - global_position).normalized()
-		var b := Bullet.new()
+		var b: Area2D = BulletT.new()
 		get_parent().add_child(b)
 		b.setup(global_position + Vector2(0, -16), dir, false, 240.0)
 		shoot_cd = 1.35

@@ -1,6 +1,8 @@
 class_name FeelHud
 extends CanvasLayer
 
+const GfxT := preload("res://scripts/gfx.gd")
+
 var _weapon: Label
 var _hint: Label
 var _clear: Label
@@ -13,9 +15,9 @@ func _ready() -> void:
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(root)
 
-	_weapon = Gfx.label(root, "WEAPON  RAPID", Vector2(24, 16), 22, Color(0.95, 0.9, 0.75))
-	_hint = Gfx.label(root, "STICK move+aim   FIRE hold   JUMP   down=duck", Vector2(24, 46), 14, Color(0.7, 0.68, 0.72))
-	_clear = Gfx.label(root, "", Vector2(24, 72), 26, Color(1, 0.85, 0.3))
+	_weapon = GfxT.label(root, "WEAPON  RAPID", Vector2(24, 16), 22, Color(0.95, 0.9, 0.75))
+	_hint = GfxT.label(root, "STICK move+aim   FIRE hold   JUMP   down=duck", Vector2(24, 46), 14, Color(0.7, 0.68, 0.72))
+	_clear = GfxT.label(root, "", Vector2(24, 72), 26, Color(1, 0.85, 0.3))
 
 
 func _process(_delta: float) -> void:

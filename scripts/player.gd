@@ -1,6 +1,9 @@
 class_name Player
 extends CharacterBody2D
 
+const GfxT := preload("res://scripts/gfx.gd")
+const BulletT := preload("res://scripts/bullet.gd")
+
 const RUN_SPEED := 250.0
 const ACCEL := 5200.0
 const FRICTION := 4800.0
@@ -65,22 +68,22 @@ func _build_gfx() -> void:
 	add_child(_gfx)
 
 	# Outline so the player never disappears into the backdrop.
-	Gfx.rect_poly(_gfx, Vector2(-12, -40), Vector2(24, 40), Color(0.05, 0.06, 0.08), 1)
+	GfxT.rect_poly(_gfx, Vector2(-12, -40), Vector2(24, 40), Color(0.05, 0.06, 0.08), 1)
 	# Coat
-	Gfx.rect_poly(_gfx, Vector2(-10, -36), Vector2(20, 36), Color(0.78, 0.82, 0.86), 2)
+	GfxT.rect_poly(_gfx, Vector2(-10, -36), Vector2(20, 36), Color(0.78, 0.82, 0.86), 2)
 	# Chest slash (readable silhouette)
-	Gfx.rect_poly(_gfx, Vector2(-6, -28), Vector2(12, 8), Color(0.45, 0.12, 0.16), 3)
+	GfxT.rect_poly(_gfx, Vector2(-6, -28), Vector2(12, 8), Color(0.45, 0.12, 0.16), 3)
 	# Head
-	Gfx.rect_poly(_gfx, Vector2(-7, -50), Vector2(14, 14), Color(0.93, 0.88, 0.78), 3)
+	GfxT.rect_poly(_gfx, Vector2(-7, -50), Vector2(14, 14), Color(0.93, 0.88, 0.78), 3)
 	# Hair / occult mark
-	Gfx.rect_poly(_gfx, Vector2(-7, -54), Vector2(14, 6), Color(0.18, 0.12, 0.14), 4)
-	Gfx.rect_poly(_gfx, Vector2(-3, -48), Vector2(6, 4), Color(0.7, 0.12, 0.18), 4)
+	GfxT.rect_poly(_gfx, Vector2(-7, -54), Vector2(14, 6), Color(0.18, 0.12, 0.14), 4)
+	GfxT.rect_poly(_gfx, Vector2(-3, -48), Vector2(6, 4), Color(0.7, 0.12, 0.18), 4)
 	# Legs
-	Gfx.rect_poly(_gfx, Vector2(-9, -12), Vector2(7, 12), Color(0.28, 0.22, 0.24), 2)
-	Gfx.rect_poly(_gfx, Vector2(2, -12), Vector2(7, 12), Color(0.28, 0.22, 0.24), 2)
+	GfxT.rect_poly(_gfx, Vector2(-9, -12), Vector2(7, 12), Color(0.28, 0.22, 0.24), 2)
+	GfxT.rect_poly(_gfx, Vector2(2, -12), Vector2(7, 12), Color(0.28, 0.22, 0.24), 2)
 	# Gun
-	Gfx.rect_poly(_gfx, Vector2(8, -26), Vector2(22, 6), Color(0.86, 0.7, 0.18), 4)
-	_muzzle = Gfx.rect_poly(_gfx, Vector2(28, -28), Vector2(8, 10), Color(1, 0.95, 0.4), 5)
+	GfxT.rect_poly(_gfx, Vector2(8, -26), Vector2(22, 6), Color(0.86, 0.7, 0.18), 4)
+	_muzzle = GfxT.rect_poly(_gfx, Vector2(28, -28), Vector2(8, 10), Color(1, 0.95, 0.4), 5)
 	_muzzle.visible = false
 
 
@@ -219,7 +222,7 @@ func _shoot() -> void:
 
 
 func _spawn_bullet(parent: Node, origin: Vector2, dir: Vector2) -> void:
-	var b := Bullet.new()
+	var b: Area2D = BulletT.new()
 	parent.add_child(b)
 	b.setup(origin, dir, true, BULLET_SPEED)
 

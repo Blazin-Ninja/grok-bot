@@ -1,6 +1,9 @@
 class_name Boss
 extends CharacterBody2D
 
+const GfxT := preload("res://scripts/gfx.gd")
+const BulletT := preload("res://scripts/bullet.gd")
+
 enum Phase { IDLE, TELL, SLAM, SPIT }
 
 const GRAVITY := 1400.0
@@ -49,21 +52,21 @@ func _build() -> void:
 	_gfx = Node2D.new()
 	add_child(_gfx)
 	# Occult idol — big readable block, horns, eye
-	Gfx.rect_poly(_gfx, Vector2(-30, -72), Vector2(60, 72), Color(0.38, 0.08, 0.12), 2)
-	Gfx.rect_poly(_gfx, Vector2(-22, -88), Vector2(44, 20), Color(0.55, 0.12, 0.16), 3)
-	Gfx.poly(_gfx, PackedVector2Array([Vector2(-30, -72), Vector2(-42, -110), Vector2(-10, -72)]), Color(0.22, 0.04, 0.06), 3)
-	Gfx.poly(_gfx, PackedVector2Array([Vector2(30, -72), Vector2(42, -110), Vector2(10, -72)]), Color(0.22, 0.04, 0.06), 3)
-	Gfx.rect_poly(_gfx, Vector2(-10, -64), Vector2(20, 14), Color(0.95, 0.2, 0.15), 4)
-	Gfx.rect_poly(_gfx, Vector2(-4, -58), Vector2(8, 8), Color(1, 0.85, 0.3), 5)
+	GfxT.rect_poly(_gfx, Vector2(-30, -72), Vector2(60, 72), Color(0.38, 0.08, 0.12), 2)
+	GfxT.rect_poly(_gfx, Vector2(-22, -88), Vector2(44, 20), Color(0.55, 0.12, 0.16), 3)
+	GfxT.poly(_gfx, PackedVector2Array([Vector2(-30, -72), Vector2(-42, -110), Vector2(-10, -72)]), Color(0.22, 0.04, 0.06), 3)
+	GfxT.poly(_gfx, PackedVector2Array([Vector2(30, -72), Vector2(42, -110), Vector2(10, -72)]), Color(0.22, 0.04, 0.06), 3)
+	GfxT.rect_poly(_gfx, Vector2(-10, -64), Vector2(20, 14), Color(0.95, 0.2, 0.15), 4)
+	GfxT.rect_poly(_gfx, Vector2(-4, -58), Vector2(8, 8), Color(1, 0.85, 0.3), 5)
 
 	_tell_mark = Node2D.new()
 	_tell_mark.visible = false
 	_tell_mark.position = Vector2(0, -128)
 	add_child(_tell_mark)
-	Gfx.poly(_tell_mark, PackedVector2Array([Vector2(-10, -28), Vector2(10, -28), Vector2(0, 8)]), Color(1, 0.85, 0.15), 8)
-	Gfx.rect_poly(_tell_mark, Vector2(-6, 12), Vector2(12, 10), Color(1, 0.85, 0.15), 8)
+	GfxT.poly(_tell_mark, PackedVector2Array([Vector2(-10, -28), Vector2(10, -28), Vector2(0, 8)]), Color(1, 0.85, 0.15), 8)
+	GfxT.rect_poly(_tell_mark, Vector2(-6, 12), Vector2(12, 10), Color(1, 0.85, 0.15), 8)
 
-	_warn = Gfx.rect_poly(self, Vector2(-90, -8), Vector2(180, 8), Color(1, 0.2, 0.15, 0.0), 6)
+	_warn = GfxT.rect_poly(self, Vector2(-90, -8), Vector2(180, 8), Color(1, 0.2, 0.15, 0.0), 6)
 
 
 func _physics_process(delta: float) -> void:
@@ -150,7 +153,7 @@ func _do_spit() -> void:
 	if player != null:
 		base = ((player as Node2D).global_position + Vector2(0, -20) - global_position).normalized()
 	for ang in [-0.45, -0.22, 0.0, 0.22, 0.45]:
-		var b := Bullet.new()
+		var b: Area2D = BulletT.new()
 		get_parent().add_child(b)
 		b.setup(global_position + Vector2(0, -48), base.rotated(ang), false, 260.0)
 

@@ -1,6 +1,8 @@
 class_name Bullet
 extends Area2D
 
+const GfxT := preload("res://scripts/gfx.gd")
+
 var velocity: Vector2 = Vector2.ZERO
 var life: float = 1.35
 var damage: int = 1
@@ -27,9 +29,9 @@ func setup(origin: Vector2, dir: Vector2, player_owned: bool, speed: float = 680
 	add_child(cs)
 
 	var color := Color(1.0, 0.92, 0.35) if player_owned else Color(0.95, 0.25, 0.2)
-	Gfx.rect_poly(self, Vector2(-6, -3), Vector2(12, 6), color, 4)
+	GfxT.rect_poly(self, Vector2(-6, -3), Vector2(12, 6), color, 4)
 	if player_owned:
-		Gfx.rect_poly(self, Vector2(-8, -1), Vector2(5, 2), Color(1, 1, 0.8), 5)
+		GfxT.rect_poly(self, Vector2(-8, -1), Vector2(5, 2), Color(1, 1, 0.8), 5)
 
 	body_entered.connect(_on_body)
 	area_entered.connect(_on_area)

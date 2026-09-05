@@ -14,4 +14,5 @@ if grep -R --include='*.gd' -nE 'Image\.load\s*\(|\.globalize_path\s*\(' "$ROOT/
   echo "P0: do not load sprites via Image.load / globalize_path" >&2
   exit 1
 fi
+"$GODOT" --headless --path "$ROOT" --import --quit
 "$GODOT" --headless --path "$ROOT" --script "$ROOT/tools/smoke_test.gd"

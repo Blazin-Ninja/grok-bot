@@ -1,6 +1,8 @@
 class_name VirtualPad
 extends CanvasLayer
 
+const GfxT := preload("res://scripts/gfx.gd")
+
 ## Left stick: move + 8-way aim. Right: FIRE (hold) and JUMP.
 
 const STICK_R := 78.0
@@ -33,9 +35,9 @@ func _ready() -> void:
 	_stick_origin = _base.position + _base.size * 0.5
 
 	_fire_btn = _box(root, Vector2(1280 - 250, 720 - 168), Vector2(96, 96), Color(0.7, 0.18, 0.16, 0.72))
-	_fire_label = Gfx.label(_fire_btn, "FIRE", Vector2(22, 34), 20, Color(1, 0.92, 0.9))
+	_fire_label = GfxT.label(_fire_btn, "FIRE", Vector2(22, 34), 20, Color(1, 0.92, 0.9))
 	_jump_btn = _box(root, Vector2(1280 - 130, 720 - 168), Vector2(96, 96), Color(0.2, 0.42, 0.78, 0.72))
-	_jump_label = Gfx.label(_jump_btn, "JUMP", Vector2(18, 34), 20, Color(0.9, 0.95, 1))
+	_jump_label = GfxT.label(_jump_btn, "JUMP", Vector2(18, 34), 20, Color(0.9, 0.95, 1))
 
 	# Re-anchor on resize so Android landscape stays usable.
 	root.resized.connect(_relayout)
