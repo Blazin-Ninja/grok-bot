@@ -1,6 +1,5 @@
 import {
   BUILDINGS,
-  CELL,
   GRID,
   OFFLINE_CAP_MS,
   PLACEABLE,
@@ -8,6 +7,7 @@ import {
   crystalRate,
   goldCap,
   keepTrickle,
+  meadowHalf,
   upgradeCost,
   upgradeDurationMs,
   type BuildingType,
@@ -180,5 +180,5 @@ export function resetSave(): SaveData {
 }
 
 export function plateauHalf(): number {
-  return (GRID * CELL) / 2 + 1.35;
+  return meadowHalf();
 }

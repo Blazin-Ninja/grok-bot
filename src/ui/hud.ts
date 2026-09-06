@@ -9,6 +9,7 @@ import {
   type TroopType,
 } from "../game/catalog";
 import { computeCap, goldPerSecond, type BuildingRec, type SaveData } from "../game/state";
+import { buildingThumb, troopThumb } from "./icons";
 
 export type HudMode = "village" | "build" | "inspect" | "loadout" | "raid" | "result";
 
@@ -42,19 +43,26 @@ export class Hud {
     root.innerHTML = `
       <div class="topbar">
         <div class="brand">EMBERKEEP</div>
-        <div class="chip"><i class="coin"></i><strong id="gold">0</strong><span id="rate">+0/s</span></div>
+        <div class="chip">
+          <i class="coin"></i>
+          <div class="chip-copy">
+            <strong id="gold">0</strong>
+            <span id="rate">+0/s</span>
+          </div>
+        </div>
         <button class="ghost-btn" id="reset" type="button">New village</button>
       </div>
       <div class="keepbar" id="keepbar"><label>Rival keep</label><div class="bar"><i id="keepfill"></i></div></div>
       <div class="hint-float" id="hint"></div>
       <div class="sheet" id="sheet">
         <h2>Raise a building</h2>
+        <p class="sheet-lead">Tap a card, then a clear plot on the grass.</p>
         <div class="cards" id="cards"></div>
       </div>
       <div class="inspect" id="inspect"></div>
       <div class="dock" id="dock">
         <button type="button" id="buildBtn"><em>Build</em><small>Crystal · vault · tower</small></button>
-        <button type="button" id="raidBtn"><em>Raid</em><small>March on a rival hold</small></button>
+        <button type="button" id="raidBtn" class="raid-cta"><em>Raid</em><small>March on a rival hold</small></button>
       </div>
       <div class="raid-hud" id="raidhud"></div>
       <div class="overlay" id="overlay"></div>
@@ -82,7 +90,7 @@ export class Hud {
       const btn = document.createElement("button");
       btn.className = "card";
       btn.dataset.type = type;
-      btn.innerHTML = `<em>${def.name}</em><small>${def.blurb}</small><div class="cost">${def.cost}g</div>`;
+      btn.innerHTML = `<img class="thumb" alt="" src="${buildingThumb(type)}"><em>${def.name}</em><small>${def.blurb}</small><div class="cost">${def.cost}g</div>`;
       btn.addEventListener("click", () => this.onBuild(type));
       cards.appendChild(btn);
     }
@@ -159,7 +167,7 @@ export class Hud {
     this.overlay.innerHTML = `
       <div class="modal">
         <h2>Rival hold</h2>
-        <p>Pick a warband. ${used}/${RAID_SLOTS} slots. Deploy them on the gold field.</p>
+        <p>Pick a warband. <strong>${used}/${RAID_SLOTS}</strong> housing. Deploy on the gold field by the south gate.</p>
         <div class="troops"></div>
         <div class="row">
           <button type="button" id="march">March</button>
@@ -171,8 +179,8 @@ export class Hud {
     (["imp", "wolf", "ogre"] as TroopType[]).forEach((type) => {
       const def = TROOPS[type];
       const row = document.createElement("div");
-      row.className = "troop";
-      row.innerHTML = `<strong>${def.name}</strong><span>${def.slots} slot · ${def.hp} hp</span>
+      row.className = `troop troop-${type}`;
+      row.innerHTML = `<img class="thumb" alt="" src="${troopThumb(type)}"><div class="troop-copy"><strong>${def.name}</strong><span>${def.slots} housing · ${def.hp} hp</span></div>
         <div class="stepper">
           <button type="button" data-d="-1">−</button>
           <span>${this.loadout[type]}</span>
@@ -211,8 +219,8 @@ export class Hud {
     this.raidHud.innerHTML = "";
     (["imp", "wolf", "ogre"] as TroopType[]).forEach((type) => {
       const b = document.createElement("button");
-      b.className = this.selectedTroop === type ? "selected" : "";
-      b.innerHTML = `<em>${TROOPS[type].name}</em><small>${counts[type]} left</small>`;
+      b.className = `raid-card raid-${type}${this.selectedTroop === type ? " selected" : ""}`;
+      b.innerHTML = `<img class="thumb" alt="" src="${troopThumb(type)}"><em>${TROOPS[type].name}</em><b>${counts[type]}</b><small>${TROOPS[type].slots} housing</small>`;
       b.addEventListener("click", () => {
         this.selectedTroop = type;
         this.onSelectTroop(type);
