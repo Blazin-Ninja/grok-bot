@@ -107,10 +107,10 @@ export class RaidWorld {
     return p.z > zone.zMin && p.z < zone.zMax && Math.abs(p.x) < zone.xHalf;
   }
 
-  tryDeploy(type: TroopType, p: Vector3): boolean {
+  tryDeploy(type: TroopType, p: Vector3, ignoreZone = false): boolean {
     if (this.done) return false;
     if (this.leftover[type] <= 0) return false;
-    if (!this.inDeploy(p)) return false;
+    if (!ignoreZone && !this.inDeploy(p)) return false;
     this.leftover[type] -= 1;
     this.deployed += 1;
     const mesh = createTroop(type);

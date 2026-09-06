@@ -64,7 +64,7 @@ export function createSky(): Mesh {
 
 export function addDaylight(scene: Scene, enemy: boolean): void {
   scene.background = new Color(enemy ? "#8ec8e4" : "#7ec8ee");
-  scene.fog = new FogExp2(enemy ? "#c5dcc8" : "#c8e6f4", 0.0065);
+  scene.fog = new FogExp2(enemy ? "#d0e8cc" : "#d4eef8", 0.0045);
   const hemi = new HemisphereLight(enemy ? "#ffe8c4" : "#fff6dc", enemy ? "#7a8c48" : "#5aa040", 1.15);
   const sun = new DirectionalLight("#fff3d0", 2.05);
   sun.position.set(16, 30, 12);
@@ -107,8 +107,8 @@ export function createPlateau(kit: ArtKit, enemy: boolean): Group {
     grassGeo,
     new MeshStandardMaterial({
       map: enemy ? kit.enemyGrass : kit.grass,
-      roughness: 0.96,
-      color: enemy ? "#d8e8a8" : "#ffffff",
+      roughness: 0.94,
+      color: enemy ? "#e8f0a0" : "#c8f070",
     }),
   );
   grass.rotation.x = -Math.PI / 2;
@@ -119,17 +119,25 @@ export function createPlateau(kit: ArtKit, enemy: boolean): Group {
     new BoxGeometry(field + 0.15, 1.35, field + 0.15),
     new MeshStandardMaterial({ map: kit.dirt, roughness: 0.96 }),
   );
-  earth.position.y = -0.7;
+  earth.position.y = -0.92;
   earth.receiveShadow = true;
   earth.castShadow = true;
   g.add(earth);
 
-  const rim = new Mesh(
-    new BoxGeometry(field + 0.22, 0.14, field + 0.22),
-    new MeshStandardMaterial({ map: kit.dirt, color: "#b88858", roughness: 0.95 }),
-  );
-  rim.position.y = -0.02;
-  g.add(rim);
+  const lip = new MeshStandardMaterial({ map: kit.dirt, color: "#c49860", roughness: 0.95 });
+  const lipW = field + 0.35;
+  const edge = 0.42;
+  for (const [w, d, x, z] of [
+    [lipW, edge, 0, field / 2 + 0.05],
+    [lipW, edge, 0, -field / 2 - 0.05],
+    [edge, field, field / 2 + 0.05, 0],
+    [edge, field, -field / 2 - 0.05, 0],
+  ] as const) {
+    const plank = new Mesh(new BoxGeometry(w, 0.16, d), lip);
+    plank.position.set(x, -0.06, z);
+    plank.receiveShadow = true;
+    g.add(plank);
+  }
 
   const pathMat = new MeshStandardMaterial({ map: kit.path, roughness: 0.98, color: "#e8c890" });
   const main = new Mesh(new PlaneGeometry(1.55, inner * 0.62), pathMat);
@@ -148,6 +156,36 @@ export function createPlateau(kit: ArtKit, enemy: boolean): Group {
   return g;
 }
 
+function wallRun(
+  parent: Group,
+  stone: MeshStandardMaterial,
+  wood: MeshStandardMaterial,
+  x: number,
+  z: number,
+  length: number,
+  alongX: boolean,
+): void {
+  const h = 0.98;
+  const thick = 0.36;
+  const wall = new Mesh(new BoxGeometry(alongX ? length : thick, h, alongX ? thick : length), stone);
+  wall.position.set(x, h / 2, z);
+  wall.castShadow = true;
+  wall.receiveShadow = true;
+  parent.add(wall);
+  const cap = new Mesh(new BoxGeometry(alongX ? length + 0.06 : 0.44, 0.1, alongX ? 0.44 : length + 0.06), wood);
+  cap.position.set(x, h + 0.02, z);
+  parent.add(cap);
+  const count = Math.max(2, Math.floor(length / 1.05));
+  for (let i = 0; i < count; i++) {
+    if (i % 2 === 1) continue;
+    const t = -length / 2 + (i + 0.5) * (length / count);
+    const merlon = new Mesh(new BoxGeometry(alongX ? 0.32 : 0.22, 0.22, alongX ? 0.22 : 0.32), stone);
+    merlon.position.set(alongX ? x + t : x, h + 0.16, alongX ? z : z + t);
+    merlon.castShadow = true;
+    parent.add(merlon);
+  }
+}
+
 function createWalls(kit: ArtKit, enemy: boolean): Group {
   const g = new Group();
   const stone = new MeshStandardMaterial({
@@ -157,62 +195,18 @@ function createWalls(kit: ArtKit, enemy: boolean): Group {
   const wood = new MeshStandardMaterial({ map: kit.wood, roughness: 0.88 });
   const roof = new MeshStandardMaterial({ map: enemy ? kit.darkRoof : kit.roof, roughness: 0.7 });
   const half = wallHalf();
-  const gateW = 2.55;
-  const seg = 1.12;
-  const h = 0.92;
+  const gateW = 2.6;
+  const inset = 0.55;
+  const run = half * 2 - inset * 2;
 
-  const addSegment = (x: number, z: number, rot: number): void => {
-    const post = new Mesh(new BoxGeometry(0.34, h, 0.34), stone);
-    post.position.set(x, h / 2, z);
-    post.rotation.y = rot;
-    post.castShadow = true;
-    post.receiveShadow = true;
-    g.add(post);
-    const panel = new Mesh(new BoxGeometry(seg * 0.92, h * 0.72, 0.2), stone);
-    panel.position.set(x, h * 0.42, z);
-    panel.rotation.y = rot;
-    panel.castShadow = true;
-    panel.receiveShadow = true;
-    g.add(panel);
-    const cap = new Mesh(new BoxGeometry(seg * 0.98, 0.1, 0.28), wood);
-    cap.position.set(x, h * 0.82, z);
-    cap.rotation.y = rot;
-    g.add(cap);
-    const merlon = new Mesh(new BoxGeometry(0.28, 0.2, 0.22), stone);
-    merlon.position.set(x, h + 0.08, z);
-    merlon.rotation.y = rot;
-    merlon.castShadow = true;
-    g.add(merlon);
-  };
+  wallRun(g, stone, wood, 0, -half, run, true);
+  wallRun(g, stone, wood, -half, 0, run, false);
+  wallRun(g, stone, wood, half, 0, run, false);
 
-  const sides: { axis: "x" | "z"; sign: number }[] = [
-    { axis: "z", sign: -1 },
-    { axis: "z", sign: 1 },
-    { axis: "x", sign: -1 },
-    { axis: "x", sign: 1 },
-  ];
-  for (const side of sides) {
-    const span = half * 2;
-    const count = Math.floor(span / seg);
-    for (let i = 0; i <= count; i++) {
-      const t = -half + (i / count) * span;
-      let x = 0;
-      let z = 0;
-      let rot = 0;
-      if (side.axis === "z") {
-        x = t;
-        z = side.sign * half;
-        rot = 0;
-        if (side.sign === 1 && Math.abs(x) < gateW / 2) continue;
-      } else {
-        x = side.sign * half;
-        z = t;
-        rot = Math.PI / 2;
-      }
-      if (Math.abs(Math.abs(x) - half) < 0.35 && Math.abs(Math.abs(z) - half) < 0.35) continue;
-      addSegment(x, z, rot);
-    }
-  }
+  const southLen = (run - gateW) / 2;
+  const southOff = gateW / 2 + southLen / 2;
+  wallRun(g, stone, wood, -southOff, half, southLen, true);
+  wallRun(g, stone, wood, southOff, half, southLen, true);
 
   const corners: [number, number][] = [
     [-half, -half],
@@ -221,33 +215,33 @@ function createWalls(kit: ArtKit, enemy: boolean): Group {
     [half, half],
   ];
   for (const [x, z] of corners) {
-    const tower = new Mesh(new CylinderGeometry(0.48, 0.54, 1.35, 10), stone);
-    tower.position.set(x, 0.68, z);
+    const tower = new Mesh(new CylinderGeometry(0.5, 0.56, 1.38, 10), stone);
+    tower.position.set(x, 0.7, z);
     tower.castShadow = true;
     tower.receiveShadow = true;
     g.add(tower);
-    const cap = new Mesh(new ConeGeometry(0.58, 0.48, 8), roof);
-    cap.position.set(x, 1.58, z);
+    const cap = new Mesh(new ConeGeometry(0.6, 0.5, 8), roof);
+    cap.position.set(x, 1.62, z);
     cap.castShadow = true;
     g.add(cap);
   }
 
-  const postL = new Mesh(new BoxGeometry(0.42, 1.35, 0.42), stone);
-  postL.position.set(-gateW / 2, 0.68, half);
-  const postR = new Mesh(new BoxGeometry(0.42, 1.35, 0.42), stone);
-  postR.position.set(gateW / 2, 0.68, half);
+  const postL = new Mesh(new BoxGeometry(0.44, 1.38, 0.44), stone);
+  postL.position.set(-gateW / 2, 0.7, half);
+  const postR = new Mesh(new BoxGeometry(0.44, 1.38, 0.44), stone);
+  postR.position.set(gateW / 2, 0.7, half);
   postL.castShadow = true;
   postR.castShadow = true;
   g.add(postL, postR);
-  const lintel = new Mesh(new BoxGeometry(gateW + 0.2, 0.22, 0.38), wood);
-  lintel.position.set(0, 1.28, half);
+  const lintel = new Mesh(new BoxGeometry(gateW + 0.25, 0.22, 0.4), wood);
+  lintel.position.set(0, 1.32, half);
   g.add(lintel);
-  const doorL = new Mesh(new BoxGeometry(0.95, 1.05, 0.08), wood);
-  doorL.position.set(-0.62, 0.55, half + 0.12);
-  doorL.rotation.y = 0.35;
-  const doorR = new Mesh(new BoxGeometry(0.95, 1.05, 0.08), wood);
-  doorR.position.set(0.62, 0.55, half + 0.12);
-  doorR.rotation.y = -0.35;
+  const doorL = new Mesh(new BoxGeometry(0.98, 1.08, 0.08), wood);
+  doorL.position.set(-0.64, 0.56, half + 0.14);
+  doorL.rotation.y = 0.38;
+  const doorR = new Mesh(new BoxGeometry(0.98, 1.08, 0.08), wood);
+  doorR.position.set(0.64, 0.56, half + 0.14);
+  doorR.rotation.y = -0.38;
   doorL.castShadow = true;
   doorR.castShadow = true;
   g.add(doorL, doorR);
@@ -265,14 +259,30 @@ export function createProps(kit: ArtKit, enemy: boolean): Group {
     return n - Math.floor(n);
   };
 
-  for (let i = 0; i < 34; i++) {
-    const a = (i / 34) * Math.PI * 2 + rng(i) * 0.35;
+  for (let i = 0; i < 48; i++) {
+    const a = (i / 48) * Math.PI * 2 + rng(i) * 0.28;
     const r = half + 1.15 + rng(i + 3) * (meadow - half - 1.6);
     const usePine = rng(i + 8) > 0.62;
     const tree = usePine ? createPine(kit, rng(i + 9)) : createTree(kit, rng(i + 8));
     tree.position.set(Math.cos(a) * r, 0, Math.sin(a) * r);
     tree.rotation.y = rng(i + 2) * Math.PI;
     g.add(tree);
+  }
+
+  const innerCorners: [number, number][] = [
+    [-(half - 0.85), -(half - 0.85)],
+    [half - 0.85, -(half - 0.85)],
+    [-(half - 0.85), half - 0.85],
+    [half - 0.85, half - 0.85],
+  ];
+  for (let i = 0; i < innerCorners.length; i++) {
+    const [x, z] = innerCorners[i]!;
+    const bush = createBush(kit, rng(i + 140));
+    bush.position.set(x, 0, z);
+    g.add(bush);
+    const fl = createFlower(kit, rng(i + 141));
+    fl.position.set(x + 0.35, 0, z - 0.2);
+    g.add(fl);
   }
 
   for (let i = 0; i < 10; i++) {
@@ -314,25 +324,6 @@ export function createProps(kit: ArtKit, enemy: boolean): Group {
     stone.position.set((rng(i + 110) - 0.5) * 0.7, 0.028, 1.1 + i * 0.55);
     stone.rotation.y = rng(i + 111) * 0.8;
     g.add(stone);
-  }
-
-  for (let i = 0; i < 6; i++) {
-    const cloud = new Mesh(
-      new SphereGeometry(1.6 + rng(i + 200) * 0.8, 10, 8),
-      new MeshStandardMaterial({
-        color: "#ffffff",
-        roughness: 1,
-        transparent: true,
-        opacity: 0.82,
-        emissive: "#ffffff",
-        emissiveIntensity: 0.12,
-      }),
-    );
-    cloud.scale.set(1.6, 0.42, 1);
-    cloud.position.set((rng(i) - 0.5) * 28, 11 + rng(i + 1) * 3, (rng(i + 2) - 0.5) * 22);
-    cloud.castShadow = false;
-    cloud.receiveShadow = false;
-    g.add(cloud);
   }
 
   return g;
@@ -382,7 +373,7 @@ export function createDeployField(): Mesh {
     new MeshStandardMaterial({
       color: "#f0c85a",
       transparent: true,
-      opacity: 0.28,
+      opacity: 0.18,
       roughness: 1,
     }),
   );

@@ -89,8 +89,8 @@ export function createArtKit(): ArtKit {
       }
     };
 
-  const grass = canvasTex(256, grassPaint([62, 168, 58], 1), 6);
-  const enemyGrass = canvasTex(256, grassPaint([92, 158, 52], 0.45), 6);
+  const grass = canvasTex(256, grassPaint([78, 186, 52], 1.15), 5);
+  const enemyGrass = canvasTex(256, grassPaint([108, 168, 48], 0.5), 5);
 
   const dirt = canvasTex(256, (ctx, s) => {
     ctx.fillStyle = "#8a6238";

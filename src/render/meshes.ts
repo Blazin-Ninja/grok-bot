@@ -439,7 +439,7 @@ export function createImp(): Group {
 
 export function createWolf(): Group {
   const g = new Group();
-  const fur = new MeshStandardMaterial({ color: "#6a5a4a", roughness: 0.84 });
+  const fur = new MeshStandardMaterial({ color: "#8a7a68", roughness: 0.84 });
   const mane = new MeshStandardMaterial({ color: "#3a322c", roughness: 0.8 });
   const dark = new MeshStandardMaterial({ color: "#2a2420", roughness: 0.78 });
   const eye = glowWin("#ffcc66", 1.6);
@@ -471,7 +471,7 @@ export function createWolf(): Group {
 
 export function createOgre(): Group {
   const g = new Group();
-  const skin = new MeshStandardMaterial({ color: "#7a9a3a", roughness: 0.72 });
+  const skin = new MeshStandardMaterial({ color: "#c4d44a", roughness: 0.72 });
   const cloth = new MeshStandardMaterial({ color: "#6a4024", roughness: 0.9 });
   const wood = new MeshStandardMaterial({ color: "#4a2e18", roughness: 0.85 });
   const tusk = new MeshStandardMaterial({ color: "#f0e0c0", roughness: 0.45 });
@@ -494,9 +494,9 @@ export function createOgre(): Group {
 }
 
 export function createTroop(type: TroopType): Group {
-  if (type === "imp") return createImp();
-  if (type === "wolf") return createWolf();
-  return createOgre();
+  const g = type === "imp" ? createImp() : type === "wolf" ? createWolf() : createOgre();
+  g.scale.setScalar(1.48);
+  return g;
 }
 
 export function createFireball(enemy: boolean): Mesh {

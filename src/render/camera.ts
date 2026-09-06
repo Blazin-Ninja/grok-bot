@@ -5,16 +5,16 @@ export class OrbitRig {
   target = new Vector3(0, 0.35, 0);
   yaw = Math.PI * 0.25;
   pitch = 0.98;
-  dist = 26;
-  minDist = 12;
-  maxDist = 40;
+  dist = 30;
+  minDist = 13;
+  maxDist = 42;
   private bounds = 13;
   private velX = 0;
   private velZ = 0;
   private velZoom = 0;
 
   constructor(aspect: number) {
-    this.camera = new PerspectiveCamera(38, aspect, 0.1, 140);
+    this.camera = new PerspectiveCamera(aspect < 0.75 ? 46 : 38, aspect, 0.1, 140);
     this.sync();
   }
 
@@ -24,6 +24,7 @@ export class OrbitRig {
 
   resize(w: number, h: number): void {
     this.camera.aspect = w / Math.max(1, h);
+    this.camera.fov = w / Math.max(1, h) < 0.75 ? 46 : 38;
     this.camera.updateProjectionMatrix();
   }
 
