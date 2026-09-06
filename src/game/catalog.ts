@@ -5,6 +5,27 @@ export const RAID_SLOTS = 12;
 export const OFFLINE_CAP_MS = 3 * 60 * 60 * 1000;
 export const UPGRADE_MS = 9000;
 
+/** World half-extent of the build grid. */
+export function gridHalf(): number {
+  return (GRID * CELL) / 2;
+}
+
+/** Stone wall sits just outside the build grid so plots stay clear. */
+export function wallHalf(): number {
+  return gridHalf() + 1.62;
+}
+
+/** Outer meadow beyond the walls — village FIELD, not a poker-chip island. */
+export function meadowHalf(): number {
+  return wallHalf() + 5.25;
+}
+
+/** South-gate deploy strip (raid gold field), in world XZ. */
+export function deployBounds(): { zMin: number; zMax: number; xHalf: number } {
+  const south = wallHalf();
+  return { zMin: south - 3.55, zMax: south - 0.22, xHalf: 6.85 };
+}
+
 export type BuildingType = "keep" | "crystal" | "vault" | "tower";
 export type TroopType = "imp" | "wolf" | "ogre";
 export type Palette = "village" | "enemy";

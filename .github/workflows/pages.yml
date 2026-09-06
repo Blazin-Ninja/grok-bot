@@ -2,7 +2,7 @@ name: Deploy GitHub Pages
 
 on:
   push:
-    branches: [main, cursor/emberkeep-village-bc91]
+    branches: [main, cursor/clash-fantasy-look-0bc1]
   workflow_dispatch:
 
 permissions:

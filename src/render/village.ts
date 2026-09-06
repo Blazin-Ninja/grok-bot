@@ -1,10 +1,6 @@
 import {
-  AmbientLight,
   Color,
-  DirectionalLight,
-  FogExp2,
   Group,
-  HemisphereLight,
   Plane,
   Raycaster,
   Scene,
@@ -12,10 +8,10 @@ import {
   Vector3,
   type PerspectiveCamera,
 } from "three";
-import { BUILDINGS, cellToWorld, type BuildingType } from "../game/catalog";
+import { BUILDINGS, cellToWorld, meadowHalf, type BuildingType } from "../game/catalog";
 import { occupies, type SaveData } from "../game/state";
 import { createBuilding } from "./meshes";
-import { createGridOverlay, createGhostTile, createPlateau, createProps, createSky } from "./terrain";
+import { addDaylight, createGhostTile, createGridOverlay, createPlateau, createProps, createSky } from "./terrain";
 import type { ArtKit } from "./textures";
 
 export class VillageWorld {
@@ -32,9 +28,8 @@ export class VillageWorld {
 
   constructor(kit: ArtKit) {
     this.kit = kit;
-    this.scene.background = new Color("#e07a4a");
-    this.scene.fog = new FogExp2("#c47a58", 0.012);
     this.scene.add(createSky());
+    addDaylight(this.scene, false);
     this.scene.add(this.root);
     this.root.add(createPlateau(kit, false));
     this.root.add(createProps(kit, false));
@@ -42,19 +37,6 @@ export class VillageWorld {
     this.root.add(this.grid);
     this.ghost = createGhostTile(2);
     this.root.add(this.ghost);
-
-    const hemi = new HemisphereLight("#8aa4ff", "#4a2e18", 0.72);
-    const sun = new DirectionalLight("#ffc078", 1.85);
-    sun.position.set(10, 16, 8);
-    sun.castShadow = true;
-    sun.shadow.mapSize.set(1024, 1024);
-    sun.shadow.camera.near = 2;
-    sun.shadow.camera.far = 40;
-    sun.shadow.camera.left = -16;
-    sun.shadow.camera.right = 16;
-    sun.shadow.camera.top = 16;
-    sun.shadow.camera.bottom = -16;
-    this.scene.add(hemi, sun, new AmbientLight("#2a2030", 0.25));
   }
 
   sync(save: SaveData): void {
@@ -135,8 +117,15 @@ export class VillageWorld {
         const s = 1 + Math.sin(t * 2.4) * 0.045;
         for (const p of pulse) p.scale.set(p.userData.sx ?? 1, (p.userData.sy ?? 1) * s, p.userData.sz ?? 1);
       }
-      const banners = g.children.filter((c) => c.children.length > 1 && c.userData.kind !== "keep");
-      for (const b of banners) b.rotation.y = Math.sin(t * 1.6 + g.position.x) * 0.08;
+      g.traverse((c) => {
+        if (c.userData.kind === "banner") {
+          c.rotation.y = Math.sin(t * 1.6 + g.position.x) * 0.08;
+        }
+      });
     }
+  }
+
+  fieldRadius(): number {
+    return meadowHalf();
   }
 }

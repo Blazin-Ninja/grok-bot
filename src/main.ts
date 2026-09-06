@@ -35,15 +35,15 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight, false);
 renderer.outputColorSpace = SRGBColorSpace;
 renderer.toneMapping = ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.08;
+renderer.toneMappingExposure = 1.18;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = PCFSoftShadowMap;
 
 const kit = createArtKit();
 const village = new VillageWorld(kit);
 const rig = new OrbitRig(window.innerWidth / window.innerHeight);
-rig.setBounds(8.5);
-rig.focus(0, 0.6, 17);
+rig.setBounds(village.fieldRadius() * 0.72);
+rig.focus(0, 0.2, 26);
 
 const hud = new Hud(hudRoot);
 let save: SaveData = loadSave();
@@ -128,7 +128,7 @@ hud.onMarch = (loadout) => {
   hud.setMode("raid");
   hud.openRaidHud(raid.leftover);
   hud.hint("Tap the gold field to send creatures in.");
-  rig.focus(0, 2.2, 18);
+  rig.focus(0, 0.4, 28);
 };
 
 hud.onSelectTroop = (type) => {
@@ -140,7 +140,7 @@ hud.onResultClose = () => {
   setMode("village");
   village.sync(save);
   hud.setGold(save);
-  rig.focus(0, 0.6, 17);
+  rig.focus(0, 0.2, 26);
   persist();
 };
 

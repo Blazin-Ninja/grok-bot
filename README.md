@@ -43,7 +43,7 @@ npm run preview # serve the production build
 
 ## Stack
 
-Vite + TypeScript + Three.js. Buildings and creatures are composed meshes with painted materials (stone, wood, banners, dusk lighting) — not gray boxes.
+Vite + TypeScript + Three.js. Buildings and creatures are composed meshes with painted materials (stone, wood grain, roof tiles, banners) under bright midday light — a Clash-like fantasy village, not a CoC IP clone.
 
 Android / native is out of scope. This slice is the web game.
 
@@ -55,4 +55,6 @@ Village (keep, mana crystal, vault, tower) and a raid on the rival hold:
 
 ![Raid](docs/raid.png)
 
-More captures: [`docs/upgrade.png`](docs/upgrade.png), [`docs/phone.png`](docs/phone.png).
+Phone-width village: [`docs/phone.png`](docs/phone.png). Upgrade sheet: [`docs/upgrade.png`](docs/upgrade.png).
+
+Before → after visual notes: [`docs/COMPARE.md`](docs/COMPARE.md).

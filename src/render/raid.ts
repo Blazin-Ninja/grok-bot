@@ -1,10 +1,5 @@
 import {
-  AmbientLight,
-  Color,
-  DirectionalLight,
-  FogExp2,
   Group,
-  HemisphereLight,
   Plane,
   Raycaster,
   Scene,
@@ -12,9 +7,9 @@ import {
   Vector3,
   type PerspectiveCamera,
 } from "three";
-import { BUILDINGS, TROOPS, cellToWorld, type TroopType } from "../game/catalog";
+import { BUILDINGS, TROOPS, cellToWorld, deployBounds, type TroopType } from "../game/catalog";
 import { createBuilding, createFireball, createTroop } from "./meshes";
-import { createDeployField, createPlateau, createProps, createSky } from "./terrain";
+import { addDaylight, createDeployField, createPlateau, createProps, createSky } from "./terrain";
 import type { ArtKit } from "./textures";
 
 interface CombatBuilding {
@@ -70,24 +65,12 @@ export class RaidWorld {
   constructor(kit: ArtKit, leftover: Record<TroopType, number>) {
     this.kit = kit;
     this.leftover = { ...leftover };
-    this.scene.background = new Color("#c45a48");
-    this.scene.fog = new FogExp2("#8a4a42", 0.013);
     this.scene.add(createSky());
+    addDaylight(this.scene, true);
     this.scene.add(this.root);
     this.root.add(createPlateau(kit, true));
     this.root.add(createProps(kit, true));
     this.root.add(createDeployField());
-
-    const hemi = new HemisphereLight("#9a80ff", "#3a2218", 0.7);
-    const sun = new DirectionalLight("#ff9a6a", 1.65);
-    sun.position.set(8, 15, 6);
-    sun.castShadow = true;
-    sun.shadow.mapSize.set(1024, 1024);
-    sun.shadow.camera.left = -16;
-    sun.shadow.camera.right = 16;
-    sun.shadow.camera.top = 16;
-    sun.shadow.camera.bottom = -16;
-    this.scene.add(hemi, sun, new AmbientLight("#2a1824", 0.28));
 
     this.spawnEnemy("keep", 5, 3, 520);
     this.spawnEnemy("tower", 1, 2, 230);
@@ -120,7 +103,8 @@ export class RaidWorld {
   }
 
   inDeploy(p: Vector3): boolean {
-    return p.z > 4.2 && Math.abs(p.x) < 7.2;
+    const zone = deployBounds();
+    return p.z > zone.zMin && p.z < zone.zMax && Math.abs(p.x) < zone.xHalf;
   }
 
   tryDeploy(type: TroopType, p: Vector3): boolean {
