@@ -70,8 +70,8 @@ export class RaidWorld {
   constructor(kit: ArtKit, leftover: Record<TroopType, number>) {
     this.kit = kit;
     this.leftover = { ...leftover };
-    this.scene.background = new Color("#1a1020");
-    this.scene.fog = new FogExp2("#3a2430", 0.024);
+    this.scene.background = new Color("#c45a48");
+    this.scene.fog = new FogExp2("#8a4a42", 0.013);
     this.scene.add(createSky());
     this.scene.add(this.root);
     this.root.add(createPlateau(kit, true));

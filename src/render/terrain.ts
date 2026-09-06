@@ -3,12 +3,14 @@ import {
   BoxGeometry,
   CircleGeometry,
   Color,
+  ConeGeometry,
   CylinderGeometry,
   Group,
   Mesh,
   MeshStandardMaterial,
   PlaneGeometry,
   ShaderMaterial,
+  SphereGeometry,
   Vector3,
 } from "three";
 import { CELL, GRID } from "../game/catalog";
@@ -19,9 +21,9 @@ import type { ArtKit } from "./textures";
 export function createSky(): Mesh {
   const mat = new ShaderMaterial({
     uniforms: {
-      top: { value: new Color("#24143f") },
-      mid: { value: new Color("#d46848") },
-      bot: { value: new Color("#f2c27a") },
+      top: { value: new Color("#1c1248") },
+      mid: { value: new Color("#e07a4a") },
+      bot: { value: new Color("#f6c98a") },
     },
     vertexShader: `
       varying vec3 vP;
@@ -37,16 +39,16 @@ export function createSky(): Mesh {
       uniform vec3 bot;
       void main() {
         float h = vP.y;
-        vec3 c = mix(bot, mid, smoothstep(-0.15, 0.12, h));
-        c = mix(c, top, smoothstep(0.1, 0.72, h));
+        vec3 c = mix(bot, mid, smoothstep(-0.05, 0.16, h));
+        c = mix(c, top, smoothstep(0.14, 0.78, h));
         gl_FragColor = vec4(c, 1.0);
       }
     `,
     side: BackSide,
     depthWrite: false,
+    fog: false,
   });
-  const sky = new Mesh(new CylinderGeometry(60, 60, 40, 32, 1, true), mat);
-  sky.position.y = 8;
+  const sky = new Mesh(new SphereGeometry(70, 32, 20), mat);
   sky.frustumCulled = false;
   return sky;
 }
@@ -129,12 +131,16 @@ export function createProps(kit: ArtKit, enemy: boolean): Group {
     // Gate opening toward +Z (camera-facing path).
     const deg = ((a + Math.PI / 2) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
     if (deg < 0.42 || deg > Math.PI * 2 - 0.42) continue;
-    const post = new Mesh(new BoxGeometry(0.22, 0.7, 0.22), stone);
-    post.position.set(Math.cos(a) * wallR, 0.35, Math.sin(a) * wallR);
-    post.lookAt(new Vector3(0, 0.35, 0));
+    const post = new Mesh(new BoxGeometry(0.2, 0.82, 0.2), stone);
+    post.position.set(Math.cos(a) * wallR, 0.41, Math.sin(a) * wallR);
+    post.lookAt(new Vector3(0, 0.41, 0));
     post.castShadow = true;
     post.receiveShadow = true;
     g.add(post);
+    const spike = new Mesh(new ConeGeometry(0.12, 0.22, 5), stone);
+    spike.position.set(Math.cos(a) * wallR, 0.92, Math.sin(a) * wallR);
+    spike.castShadow = true;
+    g.add(spike);
     const panel = new Mesh(new BoxGeometry(0.12, 0.48, 1.05), stone);
     const a2 = a + Math.PI / 28;
     panel.position.set(Math.cos(a2) * wallR, 0.28, Math.sin(a2) * wallR);

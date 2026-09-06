@@ -10,11 +10,12 @@ On a phone, open the GitHub Pages URL (HTTPS):
 
 **https://blazin-ninja.github.io/grok-bot/**
 
-If that 404s, a repo admin still needs to enable Pages once:
+If that 404s, enable Pages once (this repo starts with Pages off):
 
 1. Repo **Settings → Pages**
-2. Source: **GitHub Actions**
-3. Re-run the **Deploy GitHub Pages** workflow (or push this branch again)
+2. Source: **Deploy from a branch**
+3. Branch: `gh-pages` / `/` (the workflow publishes that branch)
+4. Save, then wait a minute
 
 Local play:
 
@@ -48,4 +49,10 @@ Android / native is out of scope. This slice is the web game.
 
 ## Screenshots
 
-Village and raid captures live in [`docs/`](docs/).
+Village (keep, mana crystal, vault, tower) and a raid on the rival hold:
+
+![Village](docs/village.png)
+
+![Raid](docs/raid.png)
+
+More captures: [`docs/upgrade.png`](docs/upgrade.png), [`docs/phone.png`](docs/phone.png).

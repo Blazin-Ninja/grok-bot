@@ -32,8 +32,8 @@ export class VillageWorld {
 
   constructor(kit: ArtKit) {
     this.kit = kit;
-    this.scene.background = new Color("#1c1430");
-    this.scene.fog = new FogExp2("#3a2a3c", 0.022);
+    this.scene.background = new Color("#e07a4a");
+    this.scene.fog = new FogExp2("#c47a58", 0.012);
     this.scene.add(createSky());
     this.scene.add(this.root);
     this.root.add(createPlateau(kit, false));

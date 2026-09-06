@@ -24,10 +24,10 @@ function mat(
   opts: ConstructorParameters<typeof MeshStandardMaterial>[0] = {},
 ): MeshStandardMaterial {
   return new MeshStandardMaterial({
-    map: map ? (kit[map] as MeshStandardMaterial["map"]) : undefined,
     roughness: 0.78,
     metalness: 0.04,
     ...opts,
+    ...(map ? { map: kit[map] as MeshStandardMaterial["map"] } : {}),
   });
 }
 
